@@ -1,48 +1,85 @@
 import React,{Component} from 'react';
+import uuid from 'uuid';
 
 class AgregarCita extends Component {
-    crearCita = (e) => {
+
+    state = {
+        error: true
+    }
+
+    nombrePetRef = React.createRef();
+    nombreDuenioRef = React.createRef();
+    fechaCitaRef = React.createRef();
+    timeCitaRef = React.createRef();
+    sintomasCitaRef = React.createRef();
+
+    crearNuevaCita = (e) => {
         e.preventDefault();
+        const mascota = this.nombrePetRef.current.value,
+        duenio = this.nombreDuenioRef.current.value,
+        date = this.fechaCitaRef.current.value,
+        time = this.timeCitaRef.current.value,
+        sintomas = this.sintomasCitaRef.current.value;
+
+       
+        if (mascota === '' || duenio === '' || date === ''  || sintomas === '') {
+            this.setState({error:false})
+        }else{
+            const cita = {
+                id: uuid(),
+                mascota,
+                duenio,
+                date,
+                time,
+                sintomas
+            }
+    
+            this.props.crearCita(cita);
+            e.currentTarget.reset();
+            this.setState({error:true})
+        }
 
     }
 
     render() {
+        const existeError = this.state.error;
+
         return (
             <div className="card">
                 <div className="card-header">
                     AS
                 </div>
                 <div className="card-body">
-                    <form onSubmit={this.crearCita}>
+                    <form onSubmit={this.crearNuevaCita}>
                         <div className="form-group row">
                             <label className="col-sm-4 col-lg-2 col-form-label">Nombre Mascota</label>
                             <div className="col-sm-8 col-lg-10">
-                                <input type="text" className="form-control" placeholder="Nombre Mascota" />
+                                <input ref = {this.nombrePetRef} type="text" className="form-control" placeholder="Nombre Mascota" />
                             </div>
                         </div>
                         <div className="form-group row">
                             <label className="col-sm-4 col-lg-2 col-form-label">Nombre Dueño</label>
                             <div className="col-sm-8 col-lg-10">
-                                <input type="text" className="form-control"  placeholder="Nombre Dueño de la Mascota" />
+                                <input ref = {this.nombreDuenioRef} type="text" className="form-control"  placeholder="Nombre Dueño de la Mascota" />
                             </div>
                         </div>
                 
                         <div className="form-group row">
                             <label className="col-sm-4 col-lg-2 col-form-label">Fecha</label>
                             <div className="col-sm-8 col-lg-4  mb-4 mb-lg-0">
-                                <input type="date" className="form-control" />
+                                <input ref ={this.fechaCitaRef } type="date" className="form-control" />
                             </div>                            
                 
                             <label className="col-sm-4 col-lg-2 col-form-label">Hora</label>
                             <div className="col-sm-8 col-lg-4">
-                                <input type="time" className="form-control" />
+                                <input ref = {this.timeCitaRef} type="time" className="form-control" />
                             </div>
                         </div>
                 
                         <div className="form-group row">
                             <label className="col-sm-4 col-lg-2 col-form-label">Sintomas</label>
                             <div className="col-sm-8 col-lg-10">
-                                <textarea  className="form-control"></textarea>
+                                <textarea ref = {this.sintomasCitaRef} className="form-control"></textarea>
                             </div>
                         </div>
                         <div className="form-group row justify-content-end">
@@ -51,8 +88,11 @@ class AgregarCita extends Component {
                             </div>
                         </div>
                     </form>
+                    {existeError ? 'si' : <div className="alert alert-danger">Hay campos obligatorios</div>}
+                    
                 </div>
             </div> 
+
         );
     }
 }
