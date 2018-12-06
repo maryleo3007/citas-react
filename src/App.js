@@ -10,12 +10,36 @@ class App extends Component {
     citas : []
   }
 
+  componentDidMount() {
+    const citasList = localStorage.getItem('citas');
+    if(citasList){
+      this.setState({
+        citas : JSON.parse(citasList)
+      })
+    }
+  }
+
+  componentDidUpdate() {
+     localStorage.setItem('citas',JSON.stringify(this.state.citas))
+  }
+
+ 
   crearCita = (nuevaCita) => {
     
     const citas = [...this.state.citas, nuevaCita];
 
     this.setState({citas})
     
+  }
+
+  borrarCita = (id) => {
+    const citasClone = [...this.state.citas];
+
+    const citas = citasClone.filter((cita)=> cita.id !== id)
+
+    this.setState({
+      citas
+    })
   }
 
   render() {
@@ -33,6 +57,7 @@ class App extends Component {
           <div className="col-md-6 mt-5">
               <ListaCita
                 citas = {this.state.citas}
+                borrarCita = {this.borrarCita}
               />
           </div>
           </div>
